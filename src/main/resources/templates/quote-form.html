@@ -43,8 +43,7 @@
 
     <div th:if="${error}" class="error" th:text="${error}">Error</div>
 
-    <form action="/quotes" method="post">
-
+    <form th:action="@{/quotes}" method="post">
         <div class="row">
             <div class="f">
                 <label for="name">Your name *</label>

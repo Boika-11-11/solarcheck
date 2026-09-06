@@ -47,12 +47,13 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
-                        .defaultSuccessUrl("/admin", true)                )
+                        .defaultSuccessUrl("/admin", true)
+                        .permitAll()
+                )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/")
                         .permitAll()
-                )
-                .csrf(csrf -> csrf.disable());
+                );
 
         return http.build();
     }
