@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pending reviews — SolarCheck Admin</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+        h1 { color: #1a3a5c; }
+        .sub { color: #666; margin-bottom: 25px; }
+        .review { background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 14px; border-left: 4px solid #f5a623; }
+        .review .who { color: #666; font-size: 14px; margin: 0 0 8px 0; }
+        .review .stars { color: #f5a623; font-weight: bold; font-size: 16px; }
+        .review h3 { margin: 8px 0; font-size: 17px; }
+        .review p.body { margin: 0 0 16px 0; line-height: 1.5; }
+        .actions form { display: inline; }
+        .approve { padding: 9px 20px; background: #2e9e4f; color: #fff; border: none;
+            border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .reject { padding: 9px 20px; background: #c0392b; color: #fff; border: none;
+            border-radius: 4px; cursor: pointer; font-weight: bold; margin-left: 8px; }
+        .empty { background: #fff; padding: 30px; border-radius: 8px; text-align: center; color: #888; }
+        a.back { color: #1a3a5c; text-decoration: none; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<a class="back" href="/">&larr; Back to site</a>
+
+<h1>Pending reviews</h1>
+<p class="sub">Reviews waiting for approval. Nothing here is visible to the public yet.</p>
+
+<div th:if="${reviews.isEmpty()}" class="empty">
+    <p>Nothing pending. All caught up.</p>
+</div>
+
+<div th:each="review : ${reviews}" class="review">
+
+    <p class="who">
+        For <strong th:text="${review.installer.name}">Installer</strong>
+        &middot; by <span th:text="${review.authorName}">Author</span>
+        &middot; <span th:text="${review.authorEmail}">email</span>
+        &middot; <span th:text="${#temporals.format(review.createdAt, 'd MMM yyyy HH:mm')}">date</span>
+    </p>
+
+    <div class="stars">
+        <span th:each="i : ${#numbers.sequence(1, 5)}"
+              th:text="${i <= review.rating} ? '★' : '☆'">★</span>
+    </div>
+    <h3 th:text="${review.title}">Title</h3>
+    <p class="body" th:text="${review.body}">Body</p>
+
+    <div class="actions">
+        <form th:action="@{/admin/reviews/{id}/approve(id=${review.id})}" method="post">
+            <button type="submit" class="approve">Approve</button>
+        </form>
+        <form th:action="@{/admin/reviews/{id}/reject(id=${review.id})}" method="post">
+            <button type="submit" class="reject">Reject</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+# Copy this file to application.properties and fill in your own values.
+# application.properties is git-ignored so real passwords never get committed.
+
+spring.application.name=solarcheck
+
+server.port=${PORT:8081}
+
+spring.datasource.url=${DATABASE_URL:jdbc:postgresql://localhost:5432/solarcheck}
+spring.datasource.username=${DB_USERNAME:postgres}
+spring.datasource.password=${DB_PASSWORD:CHANGE_ME}
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+spring.jpa.open-in-view=false
+
+solarcheck.admin.username=${ADMIN_USERNAME:admin}
+solarcheck.admin.password=${ADMIN_PASSWORD:CHANGE_ME}
