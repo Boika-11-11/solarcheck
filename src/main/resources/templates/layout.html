@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<th:block th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        :root { --navy:#12314f; --navy-light:#1e4a75; --gold:#f5a623; --green:#2e9e4f;
+            --red:#c0392b; --bg:#f2f4f7; --text:#2c3e50; --muted:#7a8794; --line:#e3e8ee; }
+        * { box-sizing: border-box; }
+        body { font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif; margin:0;
+            background:var(--bg); color:var(--text); line-height:1.5; }
+        .wrap { max-width:960px; margin:0 auto; padding:0 20px 60px 20px; }
+        .wrap.narrow { max-width:720px; }
+        .site-header { background:var(--navy); padding:16px 0; margin-bottom:28px; }
+        .site-header .inner { max-width:960px; margin:0 auto; padding:0 20px; display:flex;
+            align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+        .site-header .logo { color:#fff; font-size:22px; font-weight:700; text-decoration:none; }
+        .site-header .logo span { color:var(--gold); }
+        .site-header nav a { color:#c3d0dd; text-decoration:none; font-size:14px; margin-left:20px; }
+        .site-header nav a:hover { color:#fff; }
+        h1 { color:var(--navy); font-size:28px; margin:0 0 6px 0; }
+        h2 { color:var(--navy); font-size:20px; }
+        .tagline, .sub { color:var(--muted); margin:0 0 24px 0; font-size:15px; }
+        .panel { background:#fff; padding:22px; border-radius:10px; margin-bottom:18px;
+            box-shadow:0 1px 3px rgba(18,49,79,0.07); }
+        .cta { background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 100%);
+            padding:24px; border-radius:10px; margin-bottom:24px; color:#fff; }
+        .cta .big { font-size:19px; font-weight:700; margin-bottom:6px; }
+        .cta .small { font-size:14px; color:#b9cade; margin-bottom:16px; }
+        .btn { display:inline-block; padding:11px 22px; background:var(--gold); color:#1a1a1a;
+            text-decoration:none; border:none; border-radius:6px; font-weight:700;
+            font-size:15px; cursor:pointer; font-family:inherit; }
+        .btn:hover { background:#e69818; }
+        .btn.small { padding:7px 14px; font-size:13px; }
+        .btn.grey { background:#eef1f5; color:var(--text); border:1px solid var(--line); }
+        .btn.green { background:var(--green); color:#fff; }
+        .btn.red { background:#fdf0f0; color:var(--red); border:1px solid #edc9c9; }
+        label { display:block; font-weight:600; font-size:13px; color:#55636f; margin:16px 0 5px 0; }
+        input[type=text],input[type=email],input[type=tel],select,textarea {
+            width:100%; padding:10px 12px; border:1px solid #d5dce4; border-radius:6px;
+            font-size:15px; font-family:inherit; background:#fff; }
+        input:focus,select:focus,textarea:focus { outline:none; border-color:var(--gold); }
+        textarea { min-height:110px; resize:vertical; }
+        .row { display:flex; gap:12px; flex-wrap:wrap; }
+        .row .f { flex:1; min-width:190px; }
+        .card { background:#fff; padding:20px; border-radius:10px; margin-bottom:12px;
+            border-left:4px solid #dde3ea; box-shadow:0 1px 3px rgba(18,49,79,0.07); }
+        .card.verified { border-left-color:var(--green); }
+        .card h2 { margin:0 0 6px 0; font-size:19px; }
+        .card h2 a { color:var(--navy); text-decoration:none; }
+        .badge { background:var(--green); color:#fff; font-size:11px; padding:3px 8px;
+            border-radius:4px; margin-left:8px; font-weight:700; vertical-align:middle; }
+        .meta { color:var(--muted); font-size:14px; margin:3px 0; }
+        .rating { margin:8px 0 10px 0; }
+        .stars { color:var(--gold); font-size:16px; letter-spacing:1px; }
+        .rating .value { font-weight:700; color:var(--navy); margin-left:6px; font-size:15px; }
+        .rating .count-txt { color:var(--muted); font-size:14px; margin-left:4px; }
+        .rating .none { color:#9aa5b1; font-size:14px; font-style:italic; }
+        .error { background:#fdeaea; color:#a02020; padding:12px 14px; border-radius:6px;
+            margin-bottom:16px; font-size:14px; }
+        .empty { background:#fff; padding:36px; border-radius:10px; text-align:center; color:var(--muted); }
+        .note { color:#97a2ad; font-size:13px; margin-top:14px; }
+        table { width:100%; border-collapse:collapse; background:#fff; border-radius:10px;
+            overflow:hidden; box-shadow:0 1px 3px rgba(18,49,79,0.07); }
+        th { text-align:left; background:var(--navy); color:#fff; padding:12px; font-size:13px; font-weight:600; }
+        td { padding:12px; border-bottom:1px solid var(--line); font-size:14px; vertical-align:middle; }
+        tr:last-child td { border-bottom:none; }
+        .back { color:var(--navy); text-decoration:none; font-size:14px; display:inline-block; margin-bottom:14px; }
+        .count { color:var(--muted); font-size:14px; margin-bottom:14px; }
+        .tag { display:inline-block; background:#eef2f6; color:#3c5a78; padding:4px 10px;
+            border-radius:4px; font-size:13px; margin-right:6px; margin-bottom:4px; }
+        .tag.budget { background:#fff4e0; color:#8a5a00; }
+    </style>
+</th:block>
+
+<div th:fragment="header" class="site-header">
+    <div class="inner">
+        <a class="logo" href="/">Solar<span>Check</span></a>
+        <nav>
+            <a href="/">Installers</a>
+            <a href="/quotes">Get quotes</a>
+        </nav>
+    </div>
+</div>
+
+</body>
+</html>

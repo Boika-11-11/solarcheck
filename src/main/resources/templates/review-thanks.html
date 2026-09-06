@@ -1,28 +1,24 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
+<head th:replace="~{layout :: head}">
     <title>Thank you — SolarCheck</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
-        .box { background: #fff; padding: 40px; border-radius: 8px; text-align: center; margin-top: 40px; }
-        h1 { color: #2e9e4f; font-size: 26px; margin-top: 0; }
-        p { color: #555; line-height: 1.6; }
-        a.button { display: inline-block; margin-top: 20px; padding: 12px 24px; background: #f5a623;
-            color: #000; text-decoration: none; border-radius: 4px; font-weight: bold; }
-    </style>
 </head>
 <body>
 
-<div class="box">
-    <h1>Thank you</h1>
-    <p>
-        Your review of <strong th:text="${installer.name}">Company</strong> has been submitted.
-    </p>
-    <p>
-        It will be checked before it appears on the site. This usually takes a day or two.
-    </p>
-    <a class="button" href="/">Back to all installers</a>
+<div th:replace="~{layout :: header}"></div>
+
+<div class="wrap narrow">
+    <div class="panel" style="text-align:center; padding:44px;">
+        <div style="font-size:40px; margin-bottom:8px;">✓</div>
+        <h1 style="color:#2e9e4f;">Thank you</h1>
+        <p class="sub" style="margin-bottom:8px;">
+            Your review of <strong th:text="${installer.name}">Company</strong> has been submitted.
+        </p>
+        <p class="sub">
+            It will be checked before it appears on the site. This usually takes a day or two.
+        </p>
+        <a class="btn" href="/">Back to all installers</a>
+    </div>
 </div>
 
 </body>

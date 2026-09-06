@@ -1,133 +1,96 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>SolarCheck — Find a trusted solar installer</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
-        h1 { color: #1a3a5c; margin-bottom: 4px; }
-        .tagline { color: #666; margin: 0 0 24px 0; }
-
-        .filters { background: #fff; padding: 16px; border-radius: 8px; margin-bottom: 20px; }
-        .filters .line { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
-        .filters .f { flex: 1; min-width: 150px; }
-        .filters label { display: block; font-size: 12px; font-weight: bold; color: #666; margin-bottom: 4px; }
-        .filters input, .filters select { width: 100%; padding: 9px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
-        .filters button { padding: 10px 20px; background: #f5a623; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px; }
-        .filters a.clear { font-size: 13px; color: #888; margin-left: 10px; }
-
-        .count { color: #888; font-size: 14px; margin-bottom: 12px; }
-
-        .card { background: #fff; padding: 18px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid #ddd; }
-        .card.verified { border-left-color: #2e9e4f; }
-        .card h2 { margin: 0 0 6px 0; font-size: 19px; }
-        .badge { background: #2e9e4f; color: #fff; font-size: 12px; padding: 3px 8px; border-radius: 3px; margin-left: 8px; }
-        .meta { color: #666; font-size: 14px; margin: 4px 0; }
-
-        .rating { margin: 8px 0 10px 0; }
-        .rating .stars { color: #f5a623; font-size: 16px; letter-spacing: 1px; }
-        .rating .value { font-weight: bold; color: #1a3a5c; margin-left: 6px; font-size: 15px; }
-        .rating .count-txt { color: #888; font-size: 14px; margin-left: 4px; }
-        .rating .none { color: #999; font-size: 14px; font-style: italic; }
-
-        .empty { background: #fff; padding: 30px; border-radius: 8px; text-align: center; color: #888; }
-    </style>
+<head th:replace="~{layout :: head}">
+    <title>SolarCheck</title>
 </head>
 <body>
 
-<h1>SolarCheck</h1>
-<p class="tagline">Find a trusted solar installer in South Africa.</p>
-<div style="background:#1a3a5c; padding:20px; border-radius:8px; margin-bottom:22px; color:#fff;">
-    <div style="font-size:18px; font-weight:bold; margin-bottom:6px;">
-        Not sure who to call?
-    </div>
-    <div style="font-size:14px; color:#cfd8e3; margin-bottom:14px;">
-        Tell us about your project and get quotes from up to 3 rated installers. Free, no obligation.
-    </div>
-    <a href="/quotes"
-       style="display:inline-block; padding:11px 22px; background:#f5a623; color:#000;
-              text-decoration:none; border-radius:4px; font-weight:bold;">
-        Get 3 free quotes
-    </a>
-</div>
+<div th:replace="~{layout :: header}"></div>
 
-<div class="filters">
-    <form method="get" action="/">
-        <div class="line">
-            <div class="f">
-                <label for="search">Search</label>
-                <input type="text" id="search" name="search"
-                       placeholder="Company or city..." th:value="${search}">
-            </div>
+<div class="wrap">
 
-            <div class="f">
-                <label for="province">Province</label>
-                <select id="province" name="province">
-                    <option value="">All provinces</option>
-                    <option th:each="p : ${provinces}"
-                            th:value="${p}"
-                            th:text="${p}"
-                            th:selected="${p == province}">Province</option>
-                </select>
-            </div>
+    <h1>Find a solar installer you can trust</h1>
+    <p class="tagline">Real reviews from South African homeowners. Verified credentials.</p>
 
-            <div class="f">
-                <label for="sort">Sort by</label>
-                <select id="sort" name="sort">
-                    <option value="" th:selected="${sort == null}">Name (A-Z)</option>
-                    <option value="rating" th:selected="${sort == 'rating'}">Highest rated</option>
-                    <option value="reviews" th:selected="${sort == 'reviews'}">Most reviewed</option>
-                </select>
-            </div>
-
-            <div>
-                <button type="submit">Search</button>
-            </div>
-        </div>
-    </form>
-</div>
-
-<p class="count">
-    <span th:text="${cards.size()}">0</span>
-    <span th:text="${cards.size() == 1} ? 'installer' : 'installers'">installers</span>
-    <a class="clear" href="/" th:if="${search != null or province != null or sort != null}">Clear filters</a>
-</p>
-
-<div th:if="${cards.isEmpty()}" class="empty">
-    <p>No installers match your search.</p>
-</div>
-
-<div th:each="card : ${cards}"
-     class="card"
-     th:classappend="${card.installer.verified} ? 'verified' : ''">
-
-    <h2>
-        <a th:href="@{/installer/{id}(id=${card.installer.id})}"
-           th:text="${card.installer.name}"
-           style="color:#1a3a5c; text-decoration:none;">Company name</a>
-        <span th:if="${card.installer.verified}" class="badge">VERIFIED</span>
-    </h2>
-
-    <div class="rating">
-        <span th:if="${card.hasReviews()}">
-            <span class="stars">
-                <span th:each="i : ${#numbers.sequence(1, 5)}"
-                      th:text="${i <= card.average} ? '★' : '☆'">★</span>
-            </span>
-            <span class="value" th:text="${card.average}">0.0</span>
-            <span class="count-txt"
-                  th:text="${card.reviewCount == 1} ? '(1 review)' : '(' + ${card.reviewCount} + ' reviews)'">(0 reviews)</span>
-        </span>
-        <span th:unless="${card.hasReviews()}" class="none">No reviews yet</span>
+    <div class="cta">
+        <div class="big">Not sure who to call?</div>
+        <div class="small">Tell us about your project and get quotes from up to 3 rated installers. Free, no obligation.</div>
+        <a href="/quotes" class="btn">Get 3 free quotes</a>
     </div>
 
-    <p class="meta">
-        <span th:text="${card.installer.city}">City</span>
-        <span th:if="${card.installer.province}" th:text="', ' + ${card.installer.province}">, Province</span>
+    <div class="panel">
+        <form method="get" th:action="@{/}">
+            <div class="row" style="align-items:flex-end;">
+                <div class="f">
+                    <label for="search">Search</label>
+                    <input type="text" id="search" name="search"
+                           placeholder="Company or city..." th:value="${search}">
+                </div>
+                <div class="f">
+                    <label for="province">Province</label>
+                    <select id="province" name="province">
+                        <option value="">All provinces</option>
+                        <option th:each="p : ${provinces}"
+                                th:value="${p}" th:text="${p}"
+                                th:selected="${p == province}">Province</option>
+                    </select>
+                </div>
+                <div class="f">
+                    <label for="sort">Sort by</label>
+                    <select id="sort" name="sort">
+                        <option value="" th:selected="${sort == null}">Name (A-Z)</option>
+                        <option value="rating" th:selected="${sort == 'rating'}">Highest rated</option>
+                        <option value="reviews" th:selected="${sort == 'reviews'}">Most reviewed</option>
+                    </select>
+                </div>
+                <div>
+                    <button type="submit" class="btn">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <p class="count">
+        <span th:text="${cards.size()}">0</span>
+        <span th:text="${cards.size() == 1} ? 'installer' : 'installers'">installers</span>
+        <a href="/" style="margin-left:10px; color:#9aa5b1; font-size:13px;"
+           th:if="${search != null or province != null or sort != null}">Clear filters</a>
     </p>
 
-    <p class="meta" th:if="${card.installer.phone}" th:text="${card.installer.phone}">Phone</p>
-    <p class="meta" th:if="${card.installer.website}" th:text="${card.installer.website}">Website</p>
+    <div th:if="${cards.isEmpty()}" class="empty">
+        <p>No installers match your search.</p>
+    </div>
+
+    <div th:each="card : ${cards}" class="card"
+         th:classappend="${card.installer.verified} ? 'verified' : ''">
+
+        <h2>
+            <a th:href="@{/installer/{id}(id=${card.installer.id})}"
+               th:text="${card.installer.name}">Company name</a>
+            <span th:if="${card.installer.verified}" class="badge">VERIFIED</span>
+        </h2>
+
+        <div class="rating">
+            <span th:if="${card.hasReviews()}">
+                <span class="stars">
+                    <span th:each="i : ${#numbers.sequence(1, 5)}"
+                          th:text="${i <= card.average} ? '★' : '☆'">★</span>
+                </span>
+                <span class="value" th:text="${card.average}">0.0</span>
+                <span class="count-txt"
+                      th:text="${card.reviewCount == 1} ? '(1 review)' : '(' + ${card.reviewCount} + ' reviews)'">(0 reviews)</span>
+            </span>
+            <span th:unless="${card.hasReviews()}" class="none">No reviews yet</span>
+        </div>
+
+        <p class="meta">
+            <span th:text="${card.installer.city}">City</span>
+            <span th:if="${card.installer.province}" th:text="', ' + ${card.installer.province}">, Province</span>
+        </p>
+        <p class="meta" th:if="${card.installer.phone}" th:text="${card.installer.phone}">Phone</p>
+        <p class="meta" th:if="${card.installer.website}" th:text="${card.installer.website}">Website</p>
+    </div>
+
 </div>
 
 </body>

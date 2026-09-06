@@ -1,127 +1,114 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
+<head th:replace="~{layout :: head}">
     <title>Get 3 free quotes — SolarCheck</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
-        a.back { color: #1a3a5c; text-decoration: none; font-size: 14px; }
-        h1 { color: #1a3a5c; font-size: 26px; margin-bottom: 4px; }
-        .sub { color: #666; margin-bottom: 22px; }
-        .panel { background: #fff; padding: 26px; border-radius: 8px; }
-        label { display: block; font-weight: bold; margin: 16px 0 5px 0; color: #444; font-size: 13px; }
-        input[type=text], input[type=email], input[type=tel], select, textarea {
-            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;
-            box-sizing: border-box; font-size: 15px; font-family: inherit;
-        }
-        textarea { min-height: 90px; resize: vertical; }
-        .row { display: flex; gap: 12px; flex-wrap: wrap; }
-        .row .f { flex: 1; min-width: 200px; }
-        .consent { margin: 22px 0 6px 0; font-size: 14px; color: #444; line-height: 1.5; }
-        button { margin-top: 16px; padding: 13px 28px; background: #f5a623; border: none;
-            border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 16px; }
-        .error { background: #fde8e8; color: #a12; padding: 12px; border-radius: 4px; margin-bottom: 15px; }
-        .note { color: #888; font-size: 13px; margin-top: 16px; line-height: 1.5; }
-        .steps { background: #fff; padding: 18px; border-radius: 8px; margin-bottom: 18px; color: #555; font-size: 14px; line-height: 1.7; }
-    </style>
 </head>
 <body>
 
-<a class="back" href="/">&larr; Back to installers</a>
+<div th:replace="~{layout :: header}"></div>
 
-<h1>Get 3 free quotes</h1>
-<p class="sub">Tell us about your project and we'll match you with vetted installers in your area.</p>
+<div class="wrap narrow">
 
-<div class="steps">
-    <strong>How it works:</strong><br>
-    1. Fill in the form below — takes a minute<br>
-    2. We match you with up to 3 rated installers near you<br>
-    3. They contact you directly with quotes. No obligation, no cost to you.
-</div>
+    <a class="back" href="/">&larr; Back to installers</a>
 
-<div class="panel">
+    <h1>Get 3 free quotes</h1>
+    <p class="tagline">Tell us about your project and we'll match you with vetted installers in your area.</p>
 
-    <div th:if="${error}" class="error" th:text="${error}">Error</div>
+    <div class="panel" style="color:#55636f; font-size:14px; line-height:1.9;">
+        <strong style="color:#12314f;">How it works</strong><br>
+        1. Fill in the form below — takes a minute<br>
+        2. We match you with up to 3 rated installers near you<br>
+        3. They contact you directly with quotes. No obligation, no cost to you.
+    </div>
 
-    <form th:action="@{/quotes}" method="post">
-        <div class="row">
-            <div class="f">
-                <label for="name">Your name *</label>
-                <input type="text" id="name" name="name" required>
+    <div class="panel">
+
+        <div th:if="${error}" class="error" th:text="${error}">Error</div>
+
+        <form th:action="@{/quotes}" method="post">
+
+            <div class="row">
+                <div class="f">
+                    <label for="name">Your name *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="f">
+                    <label for="phone">Phone number *</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
             </div>
-            <div class="f">
-                <label for="phone">Phone number *</label>
-                <input type="tel" id="phone" name="phone" required>
+
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" required>
+
+            <div class="row">
+                <div class="f">
+                    <label for="city">City / suburb *</label>
+                    <input type="text" id="city" name="city" required>
+                </div>
+                <div class="f">
+                    <label for="province">Province</label>
+                    <select id="province" name="province">
+                        <option value="">Select...</option>
+                        <option>Eastern Cape</option>
+                        <option>Free State</option>
+                        <option>Gauteng</option>
+                        <option>KwaZulu-Natal</option>
+                        <option>Limpopo</option>
+                        <option>Mpumalanga</option>
+                        <option>Northern Cape</option>
+                        <option>North West</option>
+                        <option>Western Cape</option>
+                    </select>
+                </div>
             </div>
-        </div>
 
-        <label for="email">Email *</label>
-        <input type="email" id="email" name="email" required>
-
-        <div class="row">
-            <div class="f">
-                <label for="city">City / suburb *</label>
-                <input type="text" id="city" name="city" required>
+            <div class="row">
+                <div class="f">
+                    <label for="propertyType">Property type *</label>
+                    <select id="propertyType" name="propertyType" required>
+                        <option value="House">House</option>
+                        <option value="Townhouse / complex">Townhouse / complex</option>
+                        <option value="Apartment">Apartment</option>
+                        <option value="Business premises">Business premises</option>
+                        <option value="Farm / smallholding">Farm / smallholding</option>
+                    </select>
+                </div>
+                <div class="f">
+                    <label for="budget">Rough budget *</label>
+                    <select id="budget" name="budget" required>
+                        <option value="Under R50 000">Under R50 000</option>
+                        <option value="R50 000 - R100 000">R50 000 - R100 000</option>
+                        <option value="R100 000 - R200 000">R100 000 - R200 000</option>
+                        <option value="Over R200 000">Over R200 000</option>
+                        <option value="Not sure yet">Not sure yet</option>
+                    </select>
+                </div>
             </div>
-            <div class="f">
-                <label for="province">Province</label>
-                <select id="province" name="province">
-                    <option value="">Select...</option>
-                    <option>Eastern Cape</option>
-                    <option>Free State</option>
-                    <option>Gauteng</option>
-                    <option>KwaZulu-Natal</option>
-                    <option>Limpopo</option>
-                    <option>Mpumalanga</option>
-                    <option>Northern Cape</option>
-                    <option>North West</option>
-                    <option>Western Cape</option>
-                </select>
+
+            <label for="notes">Anything else? (optional)</label>
+            <textarea id="notes" name="notes" maxlength="1000"
+                      placeholder="e.g. backup power only, or full off-grid, or how many people live there"></textarea>
+
+            <div style="margin:22px 0 6px 0; font-size:14px; color:#55636f; line-height:1.5;">
+                <input type="checkbox" id="consent" name="consent" style="width:auto;">
+                <label for="consent" style="display:inline; font-weight:400; margin:0;">
+                    I agree that SolarCheck may share my contact details with up to 3 solar
+                    installers so they can send me quotes. *
+                </label>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="f">
-                <label for="propertyType">Property type *</label>
-                <select id="propertyType" name="propertyType" required>
-                    <option value="House">House</option>
-                    <option value="Townhouse / complex">Townhouse / complex</option>
-                    <option value="Apartment">Apartment</option>
-                    <option value="Business premises">Business premises</option>
-                    <option value="Farm / smallholding">Farm / smallholding</option>
-                </select>
+            <div style="margin-top:16px;">
+                <button type="submit" class="btn">Get my quotes</button>
             </div>
-            <div class="f">
-                <label for="budget">Rough budget *</label>
-                <select id="budget" name="budget" required>
-                    <option value="Under R50 000">Under R50 000</option>
-                    <option value="R50 000 - R100 000">R50 000 - R100 000</option>
-                    <option value="R100 000 - R200 000">R100 000 - R200 000</option>
-                    <option value="Over R200 000">Over R200 000</option>
-                    <option value="Not sure yet">Not sure yet</option>
-                </select>
-            </div>
-        </div>
 
-        <label for="notes">Anything else? (optional)</label>
-        <textarea id="notes" name="notes" maxlength="1000"
-                  placeholder="e.g. backup power only, or full off-grid, or how many people live there"></textarea>
+            <p class="note">
+                Free for homeowners. We never sell your details to anyone other than
+                the installers matched to your request.
+            </p>
+        </form>
+    </div>
 
-        <div class="consent">
-            <input type="checkbox" id="consent" name="consent">
-            <label for="consent" style="display:inline; font-weight:normal;">
-                I agree that SolarCheck may share my contact details with up to 3 solar
-                installers so they can send me quotes. *
-            </label>
-        </div>
-
-        <button type="submit">Get my quotes</button>
-
-        <p class="note">
-            Free for homeowners. We never sell your details to anyone other than
-            the installers matched to your request.
-        </p>
-    </form>
 </div>
 
 </body>
