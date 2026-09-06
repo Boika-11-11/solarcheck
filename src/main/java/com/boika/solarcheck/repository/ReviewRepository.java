@@ -16,6 +16,9 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @EntityGraph(attributePaths = "installer")
     List<Review> findByStatusOrderByCreatedAtDesc(ReviewStatus status);
 
+    @EntityGraph(attributePaths = "installer")
+    List<Review> findAllByOrderByCreatedAtDesc();
+
     long countByInstallerIdAndStatus(Long installerId, ReviewStatus status);
 
     @Query("""
@@ -25,4 +28,13 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
            GROUP BY r.installer.id
            """)
     List<Object[]> findRatingSummaries(@Param("status") ReviewStatus status);
+
+    @Query("""
+           SELECT r.rating, COUNT(r)
+           FROM Review r
+           WHERE r.installer.id = :installerId AND r.status = :status
+           GROUP BY r.rating
+           """)
+    List<Object[]> findRatingBreakdown(@Param("installerId") Long installerId,
+                                       @Param("status") ReviewStatus status);
 }

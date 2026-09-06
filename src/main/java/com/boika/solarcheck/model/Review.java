@@ -37,6 +37,11 @@ public class Review {
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column(length = 2000)
+    private String reply;
+
+    private LocalDateTime replyAt;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -63,4 +68,10 @@ public class Review {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public String getReply() { return reply; }
+    public void setReply(String reply) { this.reply = reply; }
+
+    public LocalDateTime getReplyAt() { return replyAt; }
+    public void setReplyAt(LocalDateTime replyAt) { this.replyAt = replyAt; }
 }

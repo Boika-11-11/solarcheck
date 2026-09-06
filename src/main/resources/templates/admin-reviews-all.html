@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head}">
+    <title>All reviews — SolarCheck Admin</title>
+</head>
+<body>
+
+<div th:replace="~{layout :: header}"></div>
+
+<div class="wrap">
+
+    <a class="back" href="/admin">&larr; Admin home</a>
+
+    <h1>All reviews</h1>
+    <p class="tagline">Write a reply on behalf of a business. Replies show publicly under the review.</p>
+
+    <div th:if="${reviews.isEmpty()}" class="empty">
+        <p>No reviews yet.</p>
+    </div>
+
+    <div th:each="review : ${reviews}" class="panel">
+
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
+            <div>
+                <div class="stars">
+                    <span th:each="i : ${#numbers.sequence(1, 5)}"
+                          th:text="${i <= review.rating} ? '★' : '☆'">★</span>
+                </div>
+                <h2 style="margin:6px 0 2px 0; font-size:17px;" th:text="${review.title}">Title</h2>
+                <p class="meta" style="margin:0;">
+                    <strong th:text="${review.installer.name}">Installer</strong>
+                    &middot; by <span th:text="${review.authorName}">Author</span>
+                    &middot; <span th:text="${#temporals.format(review.createdAt, 'd MMM yyyy')}">date</span>
+                </p>
+            </div>
+            <span class="tag" th:text="${review.status}">STATUS</span>
+        </div>
+
+        <p style="margin:12px 0;" th:text="${review.body}">Review text</p>
+
+        <div class="reply" th:if="${review.reply}">
+            <div class="who">
+                Reply from <span th:text="${review.installer.name}">Company</span>
+                <span class="meta" style="font-weight:400;"
+                      th:text="' · ' + ${#temporals.format(review.replyAt, 'd MMM yyyy')}"></span>
+            </div>
+            <div th:text="${review.reply}">Reply text</div>
+        </div>
+
+        <form th:action="@{/admin/reviews/{id}/reply(id=${review.id})}" method="post"
+              style="margin-top:14px;">
+            <label th:for="'reply-' + ${review.id}"
+                   th:text="${review.reply} ? 'Edit reply' : 'Write a reply'">Write a reply</label>
+            <textarea th:id="'reply-' + ${review.id}" name="reply" maxlength="2000"
+                      style="min-height:80px;"
+                      th:text="${review.reply} ?: ''"
+                      placeholder="Respond on behalf of the business..."></textarea>
+            <div style="margin-top:10px;">
+                <button type="submit" class="btn small">Save reply</button>
+                <span class="note" style="margin-left:10px;">Leave blank and save to remove a reply.</span>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<div th:replace="~{layout :: footer}"></div>
+
+</body>
+</html>

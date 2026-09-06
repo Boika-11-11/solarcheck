@@ -6,6 +6,7 @@ import com.boika.solarcheck.model.ReviewStatus;
 import com.boika.solarcheck.repository.InstallerRepository;
 import com.boika.solarcheck.repository.ReviewRepository;
 import com.boika.solarcheck.view.InstallerCard;
+import com.boika.solarcheck.view.RatingBar;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -99,10 +100,32 @@ public class InstallerController {
                 .average()
                 .orElse(0.0);
 
+        Map<Integer, Long> counts = new HashMap<>();
+        for (Object[] row : reviewRepository.findRatingBreakdown(id, ReviewStatus.PUBLISHED)) {
+            counts.put(((Number) row[0]).intValue(), ((Number) row[1]).longValue());
+        }
+
+        long total = reviews.size();
+        List<RatingBar> bars = new ArrayList<>();
+
+        for (int stars = 5; stars >= 1; stars--) {
+            long count = counts.getOrDefault(stars, 0L);
+            int percent = (total == 0) ? 0 : (int) Math.round((count * 100.0) / total);
+            bars.add(new RatingBar(stars, count, percent));
+        }
+
+        long recommendPercent = 0;
+        if (total > 0) {
+            long good = counts.getOrDefault(5, 0L) + counts.getOrDefault(4, 0L);
+            recommendPercent = Math.round((good * 100.0) / total);
+        }
+
         model.addAttribute("installer", installer);
         model.addAttribute("reviews", reviews);
         model.addAttribute("average", Math.round(average * 10) / 10.0);
-        model.addAttribute("reviewCount", reviews.size());
+        model.addAttribute("reviewCount", total);
+        model.addAttribute("bars", bars);
+        model.addAttribute("recommendPercent", recommendPercent);
 
         return "installer-detail";
     }

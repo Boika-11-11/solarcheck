@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -66,6 +67,33 @@ public class AdminController {
                 .findByStatusOrderByCreatedAtDesc(ReviewStatus.PENDING);
         model.addAttribute("reviews", pending);
         return "admin-reviews";
+    }
+
+    @GetMapping("/admin/reviews/all")
+    public String allReviews(Model model) {
+        model.addAttribute("reviews", reviewRepository.findAllByOrderByCreatedAtDesc());
+        return "admin-reviews-all";
+    }
+
+    @PostMapping("/admin/reviews/{id}/reply")
+    public String saveReply(@PathVariable Long id, @RequestParam String reply) {
+
+        Review review = reviewRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Review not found"));
+
+        String clean = reply == null ? "" : reply.trim();
+
+        if (clean.isEmpty()) {
+            review.setReply(null);
+            review.setReplyAt(null);
+        } else {
+            review.setReply(clean);
+            review.setReplyAt(LocalDateTime.now());
+        }
+
+        reviewRepository.save(review);
+        return "redirect:/admin/reviews/all";
     }
 
     @PostMapping("/admin/reviews/{id}/approve")

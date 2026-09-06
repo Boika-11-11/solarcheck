@@ -78,6 +78,27 @@
             gap:10px; color:#7f93a8; font-size:13px; }
         .site-footer nav a { color:#9db0c4; text-decoration:none; margin-left:18px; font-size:13px; }
         .site-footer nav a:hover { color:#fff; }
+        .summary { display:flex; gap:28px; flex-wrap:wrap; align-items:flex-start; }
+        .summary .score { text-align:center; min-width:130px; }
+        .summary .score .big { font-size:52px; font-weight:800; color:var(--navy); line-height:1; }
+        .summary .score .outof { color:var(--muted); font-size:13px; margin-top:2px; }
+        .summary .score .stars { font-size:19px; margin-top:6px; }
+        .summary .score .total { color:var(--muted); font-size:13px; margin-top:6px; }
+        .summary .bars { flex:1; min-width:260px; }
+        .bar-row { display:flex; align-items:center; gap:10px; margin-bottom:6px; font-size:13px; }
+        .bar-row .lbl { width:34px; color:var(--muted); white-space:nowrap; }
+        .bar-row .track { flex:1; height:9px; background:#eef1f5; border-radius:5px; overflow:hidden; }
+        .bar-row .fill { height:100%; background:var(--gold); border-radius:5px; }
+        .bar-row .pct { width:42px; text-align:right; color:var(--muted); }
+        .stats { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:18px; }
+        .stat { background:#fff; border-radius:10px; padding:16px 20px; flex:1; min-width:150px;
+            box-shadow:0 1px 3px rgba(18,49,79,0.07); }
+        .stat .v { font-size:24px; font-weight:800; color:var(--navy); line-height:1.2; }
+        .stat .v.green { color:var(--green); }
+        .stat .k { color:var(--muted); font-size:12px; margin-top:3px; letter-spacing:0.2px; }
+        .reply { background:#f6f8fa; border-left:3px solid var(--navy); padding:14px 16px;
+            border-radius:0 6px 6px 0; margin-top:14px; }
+        .reply .who { font-weight:700; color:var(--navy); font-size:14px; margin-bottom:4px; }
     </style>
 </th:block>
 
@@ -102,8 +123,6 @@
         </nav>
     </div>
 </div>
-
-<div th:replace="~{layout :: footer}"></div>
 
 </body>
 </html>

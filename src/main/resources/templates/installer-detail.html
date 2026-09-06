@@ -14,54 +14,111 @@
     <div class="panel"
          th:style="${installer.verified} ? 'border-left:4px solid #2e9e4f' : 'border-left:4px solid #dde3ea'">
 
-        <h1 style="margin-bottom:10px;">
-            <span th:text="${installer.name}">Company name</span>
-            <span th:if="${installer.verified}" class="badge">VERIFIED</span>
-        </h1>
-
-        <div class="rating" th:if="${reviewCount > 0}">
-            <span class="stars">
-                <span th:each="i : ${#numbers.sequence(1, 5)}"
-                      th:text="${i <= average} ? '★' : '☆'">★</span>
-            </span>
-            <span class="value" style="font-size:20px;" th:text="${average}">0.0</span>
-            <span class="count-txt"
-                  th:text="${reviewCount == 1} ? '(1 review)' : '(' + ${reviewCount} + ' reviews)'">(0 reviews)</span>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:14px;">
+            <div>
+                <h1 style="margin-bottom:8px;">
+                    <span th:text="${installer.name}">Company name</span>
+                    <span th:if="${installer.verified}" class="badge">VERIFIED</span>
+                </h1>
+                <p class="meta" style="margin:0;">
+                    <span th:text="${installer.city}">City</span>
+                    <span th:if="${installer.province}" th:text="', ' + ${installer.province}">, Province</span>
+                    <span th:if="${installer.phone}" th:text="' · ' + ${installer.phone}"></span>
+                </p>
+            </div>
+            <div style="white-space:nowrap;">
+                <a th:href="@{/installer/{id}/review(id=${installer.id})}" class="btn">Write a review</a>
+                <a th:if="${installer.website}"
+                   th:href="'https://' + ${installer.website}"
+                   target="_blank" rel="noopener"
+                   class="btn grey" style="margin-left:6px;">Visit website</a>
+            </div>
         </div>
-        <div class="rating" th:if="${reviewCount == 0}">
-            <span class="none">No reviews yet — be the first</span>
-        </div>
+    </div>
 
-        <p class="meta">
-            <span th:text="${installer.city}">City</span>
-            <span th:if="${installer.province}" th:text="', ' + ${installer.province}">, Province</span>
+    <div class="stats" th:if="${reviewCount > 0}">
+        <div class="stat">
+            <div class="v" th:text="${average} + ' / 5'">0.0 / 5</div>
+            <div class="k">AVERAGE RATING</div>
+        </div>
+        <div class="stat">
+            <div class="v" th:text="${reviewCount}">0</div>
+            <div class="k">TOTAL REVIEWS</div>
+        </div>
+        <div class="stat">
+            <div class="v green" th:text="${recommendPercent} + '%'">0%</div>
+            <div class="k">RATED 4★ OR BETTER</div>
+        </div>
+        <div class="stat">
+            <div class="v" th:text="${installer.verified} ? 'Yes' : 'Not yet'">Yes</div>
+            <div class="k">CREDENTIALS CHECKED</div>
+        </div>
+    </div>
+
+    <div class="panel" th:if="${reviewCount > 0}">
+        <div class="summary">
+            <div class="score">
+                <div class="big" th:text="${average}">0.0</div>
+                <div class="outof">out of 5</div>
+                <div class="stars">
+                    <span th:each="i : ${#numbers.sequence(1, 5)}"
+                          th:text="${i <= average} ? '★' : '☆'">★</span>
+                </div>
+                <div class="total"
+                     th:text="${reviewCount == 1} ? '1 review' : ${reviewCount} + ' reviews'">0 reviews</div>
+            </div>
+
+            <div class="bars">
+                <div class="bar-row" th:each="bar : ${bars}">
+                    <span class="lbl" th:text="${bar.stars()} + ' ★'">5 ★</span>
+                    <span class="track">
+                        <span class="fill" th:style="'width:' + ${bar.percent()} + '%'"></span>
+                    </span>
+                    <span class="pct" th:text="${bar.percent()} + '%'">0%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel" th:if="${reviewCount == 0}" style="text-align:center; padding:34px;">
+        <h2 style="margin-top:0;">No reviews yet</h2>
+        <p class="sub" style="margin-bottom:18px;">
+            Used this installer? Your review helps the next homeowner decide.
         </p>
-        <p class="meta" th:if="${installer.phone}" th:text="${installer.phone}">Phone</p>
-        <p class="meta" th:if="${installer.website}" th:text="${installer.website}">Website</p>
-
-        <div style="margin-top:18px;">
-            <a th:href="@{/installer/{id}/review(id=${installer.id})}" class="btn">Write a review</a>
-            <a href="/quotes" class="btn grey" style="margin-left:8px;">Get quotes</a>
-        </div>
+        <a th:href="@{/installer/{id}/review(id=${installer.id})}" class="btn">Be the first to review</a>
     </div>
 
-    <h2 style="margin-top:34px;">Reviews</h2>
-
-    <div th:if="${reviews.isEmpty()}" class="empty">
-        <p>No published reviews for this installer yet.</p>
-    </div>
+    <h2 style="margin-top:34px;" th:if="${reviewCount > 0}">
+        Reviews <span style="color:#9aa5b1; font-weight:400;" th:text="'(' + ${reviewCount} + ')'">(0)</span>
+    </h2>
 
     <div th:each="review : ${reviews}" class="panel">
-        <div class="stars">
-            <span th:each="i : ${#numbers.sequence(1, 5)}"
-                  th:text="${i <= review.rating} ? '★' : '☆'">★</span>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px;">
+            <div class="stars">
+                <span th:each="i : ${#numbers.sequence(1, 5)}"
+                      th:text="${i <= review.rating} ? '★' : '☆'">★</span>
+            </div>
+            <span class="meta" th:text="${#temporals.format(review.createdAt, 'd MMM yyyy')}">date</span>
         </div>
+
         <h2 style="margin:8px 0 4px 0; font-size:17px;" th:text="${review.title}">Title</h2>
-        <p class="meta" style="margin-bottom:12px;">
-            by <span th:text="${review.authorName}">Author</span>
-            &middot; <span th:text="${#temporals.format(review.createdAt, 'd MMM yyyy')}">date</span>
-        </p>
+        <p class="meta" style="margin-bottom:12px;" th:text="'by ' + ${review.authorName}">by Author</p>
         <p style="margin:0;" th:text="${review.body}">Review text</p>
+
+        <div class="reply" th:if="${review.reply}">
+            <div class="who">
+                Reply from <span th:text="${installer.name}">Company</span>
+                <span class="meta" style="font-weight:400;"
+                      th:text="' · ' + ${#temporals.format(review.replyAt, 'd MMM yyyy')}"></span>
+            </div>
+            <div th:text="${review.reply}">Reply text</div>
+        </div>
+    </div>
+
+    <div class="cta" style="margin-top:30px;">
+        <div class="big">Comparing installers?</div>
+        <div class="small">Get quotes from up to 3 rated installers in your area. Free, no obligation.</div>
+        <a href="/quotes" class="btn">Get 3 free quotes</a>
     </div>
 
 </div>
