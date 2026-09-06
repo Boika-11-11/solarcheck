@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Leads — SolarCheck Admin</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1050px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+        a.back { color: #1a3a5c; text-decoration: none; font-size: 14px; }
+        h1 { color: #1a3a5c; margin-bottom: 4px; }
+        .sub { color: #666; margin-bottom: 22px; font-size: 14px; }
+        .lead { background: #fff; padding: 18px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid #f5a623; }
+        .lead.done { border-left-color: #ccc; opacity: 0.65; }
+        .lead .top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px; }
+        .lead h2 { margin: 0; font-size: 18px; color: #1a3a5c; }
+        .lead .when { color: #999; font-size: 13px; }
+        .contact { margin: 10px 0; font-size: 15px; }
+        .contact a { color: #1a3a5c; text-decoration: none; margin-right: 16px; }
+        .tags { margin: 10px 0; }
+        .tag { display: inline-block; background: #eef2f6; color: #33506b; padding: 4px 10px;
+            border-radius: 3px; font-size: 13px; margin-right: 6px; margin-bottom: 4px; }
+        .tag.budget { background: #fff3e0; color: #8a5a00; }
+        .notes { background: #fafafa; padding: 12px; border-radius: 4px; color: #555;
+            font-size: 14px; line-height: 1.5; margin: 10px 0; }
+        button { padding: 8px 16px; border: 1px solid #ccc; background: #f8f8f8;
+            border-radius: 4px; cursor: pointer; font-size: 13px; }
+        button.mark { background: #2e9e4f; color: #fff; border-color: #2e9e4f; font-weight: bold; }
+        .empty { background: #fff; padding: 30px; border-radius: 8px; text-align: center; color: #888; }
+    </style>
+</head>
+<body>
+
+<a class="back" href="/admin">&larr; Admin home</a>
+
+<h1>Quote requests</h1>
+<p class="sub">
+    <span th:text="${newCount}">0</span> not yet contacted.
+    These are your leads — the thing installers pay for.
+</p>
+
+<div th:if="${quotes.isEmpty()}" class="empty">
+    <p>No quote requests yet.</p>
+</div>
+
+<div th:each="q : ${quotes}" class="lead" th:classappend="${q.contacted} ? 'done' : ''">
+
+    <div class="top">
+        <h2 th:text="${q.name}">Name</h2>
+        <span class="when" th:text="${#temporals.format(q.createdAt, 'd MMM yyyy, HH:mm')}">date</span>
+    </div>
+
+    <div class="contact">
+        <a th:href="'tel:' + ${q.phone}" th:text="${q.phone}">phone</a>
+        <a th:href="'mailto:' + ${q.email}" th:text="${q.email}">email</a>
+    </div>
+
+    <div class="tags">
+        <span class="tag" th:text="${q.city}">City</span>
+        <span class="tag" th:if="${q.province}" th:text="${q.province}">Province</span>
+        <span class="tag" th:text="${q.propertyType}">Property</span>
+        <span class="tag budget" th:text="${q.budget}">Budget</span>
+    </div>
+
+    <div class="notes" th:if="${q.notes}" th:text="${q.notes}">Notes</div>
+
+    <form th:action="@{/admin/leads/{id}/toggle-contacted(id=${q.id})}" method="post">
+        <button type="submit"
+                th:classappend="${q.contacted} ? '' : 'mark'"
+                th:text="${q.contacted} ? 'Mark as new' : 'Mark as contacted'">Mark as contacted</button>
+    </form>
+</div>
+
+</body>
+</html>

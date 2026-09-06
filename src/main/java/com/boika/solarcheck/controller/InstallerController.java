@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,15 +33,15 @@ public class InstallerController {
     }
 
     @GetMapping("/")
-    public String home(@RequestParam(required = false) String city, Model model) {
+    public String home(@RequestParam(required = false) String search,
+                       @RequestParam(required = false) String province,
+                       @RequestParam(required = false) String sort,
+                       Model model) {
 
-        List<Installer> installers;
+        String cleanSearch = blankToNull(search);
+        String cleanProvince = blankToNull(province);
 
-        if (city != null && !city.isBlank()) {
-            installers = installerRepository.findByCityIgnoreCaseOrderByNameAsc(city);
-        } else {
-            installers = installerRepository.findAllByOrderByNameAsc();
-        }
+        List<Installer> installers = installerRepository.search(cleanSearch, cleanProvince);
 
         Map<Long, double[]> summaries = new HashMap<>();
 
@@ -64,8 +65,21 @@ public class InstallerController {
             }
         }
 
+        if ("rating".equals(sort)) {
+            cards.sort(Comparator
+                    .comparingDouble(InstallerCard::average).reversed()
+                    .thenComparing(c -> c.installer().getName()));
+        } else if ("reviews".equals(sort)) {
+            cards.sort(Comparator
+                    .comparingLong(InstallerCard::reviewCount).reversed()
+                    .thenComparing(c -> c.installer().getName()));
+        }
+
         model.addAttribute("cards", cards);
-        model.addAttribute("city", city);
+        model.addAttribute("search", cleanSearch);
+        model.addAttribute("province", cleanProvince);
+        model.addAttribute("sort", sort);
+        model.addAttribute("provinces", installerRepository.findAllProvinces());
 
         return "installers";
     }
@@ -91,5 +105,12 @@ public class InstallerController {
         model.addAttribute("reviewCount", reviews.size());
 
         return "installer-detail";
+    }
+
+    private String blankToNull(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return value.trim();
     }
 }

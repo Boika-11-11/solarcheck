@@ -1,9 +1,11 @@
 package com.boika.solarcheck.controller;
 
 import com.boika.solarcheck.model.Installer;
+import com.boika.solarcheck.model.Quote;
 import com.boika.solarcheck.model.Review;
 import com.boika.solarcheck.model.ReviewStatus;
 import com.boika.solarcheck.repository.InstallerRepository;
+import com.boika.solarcheck.repository.QuoteRepository;
 import com.boika.solarcheck.repository.ReviewRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -21,11 +23,14 @@ public class AdminController {
 
     private final ReviewRepository reviewRepository;
     private final InstallerRepository installerRepository;
+    private final QuoteRepository quoteRepository;
 
     public AdminController(ReviewRepository reviewRepository,
-                           InstallerRepository installerRepository) {
+                           InstallerRepository installerRepository,
+                           QuoteRepository quoteRepository) {
         this.reviewRepository = reviewRepository;
         this.installerRepository = installerRepository;
+        this.quoteRepository = quoteRepository;
     }
 
     @GetMapping("/admin")
@@ -33,7 +38,26 @@ public class AdminController {
         model.addAttribute("pendingCount",
                 reviewRepository.findByStatusOrderByCreatedAtDesc(ReviewStatus.PENDING).size());
         model.addAttribute("installerCount", installerRepository.count());
+        model.addAttribute("newLeadCount", quoteRepository.countByContactedFalse());
         return "admin-home";
+    }
+
+    @GetMapping("/admin/leads")
+    public String leads(Model model) {
+        List<Quote> quotes = quoteRepository.findAllByOrderByCreatedAtDesc();
+        model.addAttribute("quotes", quotes);
+        model.addAttribute("newCount", quoteRepository.countByContactedFalse());
+        return "admin-leads";
+    }
+
+    @PostMapping("/admin/leads/{id}/toggle-contacted")
+    public String toggleContacted(@PathVariable Long id) {
+        Quote quote = quoteRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Lead not found"));
+        quote.setContacted(!quote.isContacted());
+        quoteRepository.save(quote);
+        return "redirect:/admin/leads";
     }
 
     @GetMapping("/admin/reviews")
