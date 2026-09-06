@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head}">
+    <title>About — SolarCheck</title>
+</head>
+<body>
+
+<div th:replace="~{layout :: header}"></div>
+
+<div class="wrap narrow">
+
+    <a class="back" href="/">&larr; Back to installers</a>
+
+    <h1>About SolarCheck</h1>
+    <p class="tagline">Helping South Africans avoid bad solar installs.</p>
+
+    <div class="panel" style="line-height:1.7;">
+
+        <h2 style="font-size:17px; margin-top:0;">Why this exists</h2>
+        <p>A home solar system costs anywhere from R50 000 to R250 000. That is a lot of money
+            to hand to someone you found on Facebook. The boom in backup power brought a lot of
+            good installers into the market — and a lot of chancers too. Homeowners have been
+            left with unsafe wiring, missing paperwork, and deposits that vanished.</p>
+        <p>SolarCheck exists so you can see what other homeowners actually experienced before
+            you sign anything.</p>
+
+        <h2 style="font-size:17px;">What the VERIFIED badge means</h2>
+        <p>A green VERIFIED badge means we have checked that the installer holds valid
+            credentials — a PV GreenCard, and registration with the Department of Employment
+            and Labour for electrical work.</p>
+        <p>It does not mean we guarantee their work. It means their paperwork is real. Always
+            read the reviews too, and always insist on a Certificate of Compliance when the job
+            is done.</p>
+
+        <h2 style="font-size:17px;">How reviews work</h2>
+        <p>Anyone can write a review. Every review is read by a human before it goes live.
+            We remove anything abusive, clearly fake, or not about actual work done.
+            We do not remove a review just because a business does not like it — but businesses
+            can contact us for a right of reply.</p>
+
+        <h2 style="font-size:17px;">How we make money</h2>
+        <p>SolarCheck is free for homeowners, always. When you request quotes, we pass your
+            details to up to three installers who may pay us a referral fee. That never affects
+            star ratings or the order companies appear in — ratings come from reviews only.</p>
+
+        <h2 style="font-size:17px;">Before you sign anything</h2>
+        <p>Ask for their PV GreenCard number. Ask for references from jobs in your suburb.
+            Never pay 100% upfront — milestone payments protect you. Make sure the quote
+            includes the Certificate of Compliance.</p>
+
+        <p style="margin-top:24px;">
+            <a href="/quotes" class="btn">Get 3 free quotes</a>
+        </p>
+    </div>
+
+</div>
+<div th:replace="~{layout :: footer}"></div>
+</body>
+</html>
