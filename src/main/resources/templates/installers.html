@@ -14,7 +14,14 @@
         .card.verified { border-left-color: #2e9e4f; }
         .card h2 { margin: 0 0 6px 0; font-size: 19px; }
         .badge { background: #2e9e4f; color: #fff; font-size: 12px; padding: 3px 8px; border-radius: 3px; margin-left: 8px; }
-        .meta { color: #666; font-size: 14px; }
+        .meta { color: #666; font-size: 14px; margin: 4px 0; }
+
+        .rating { margin: 8px 0 10px 0; }
+        .rating .stars { color: #f5a623; font-size: 16px; letter-spacing: 1px; }
+        .rating .value { font-weight: bold; color: #1a3a5c; margin-left: 6px; font-size: 15px; }
+        .rating .count { color: #888; font-size: 14px; margin-left: 4px; }
+        .rating .none { color: #999; font-size: 14px; font-style: italic; }
+
         .empty { background: #fff; padding: 30px; border-radius: 8px; text-align: center; color: #888; }
     </style>
 </head>
@@ -30,28 +37,41 @@
     </form>
 </div>
 
-<div th:if="${installers.isEmpty()}" class="empty">
+<div th:if="${cards.isEmpty()}" class="empty">
     <p>No installers found yet.</p>
 </div>
 
-<div th:each="installer : ${installers}"
+<div th:each="card : ${cards}"
      class="card"
-     th:classappend="${installer.verified} ? 'verified' : ''">
+     th:classappend="${card.installer.verified} ? 'verified' : ''">
 
     <h2>
-        <a th:href="@{/installer/{id}(id=${installer.id})}"
-           th:text="${installer.name}"
+        <a th:href="@{/installer/{id}(id=${card.installer.id})}"
+           th:text="${card.installer.name}"
            style="color:#1a3a5c; text-decoration:none;">Company name</a>
-        <span th:if="${installer.verified}" class="badge">VERIFIED</span>
+        <span th:if="${card.installer.verified}" class="badge">VERIFIED</span>
     </h2>
 
+    <div class="rating">
+        <span th:if="${card.hasReviews()}">
+            <span class="stars">
+                <span th:each="i : ${#numbers.sequence(1, 5)}"
+                      th:text="${i <= card.average} ? '★' : '☆'">★</span>
+            </span>
+            <span class="value" th:text="${card.average}">0.0</span>
+            <span class="count"
+                  th:text="${card.reviewCount == 1} ? '(1 review)' : '(' + ${card.reviewCount} + ' reviews)'">(0 reviews)</span>
+        </span>
+        <span th:unless="${card.hasReviews()}" class="none">No reviews yet</span>
+    </div>
+
     <p class="meta">
-        <span th:text="${installer.city}">City</span>
-        <span th:if="${installer.province}" th:text="', ' + ${installer.province}">, Province</span>
+        <span th:text="${card.installer.city}">City</span>
+        <span th:if="${card.installer.province}" th:text="', ' + ${card.installer.province}">, Province</span>
     </p>
 
-    <p class="meta" th:if="${installer.phone}" th:text="${installer.phone}">Phone</p>
-    <p class="meta" th:if="${installer.website}" th:text="${installer.website}">Website</p>
+    <p class="meta" th:if="${card.installer.phone}" th:text="${card.installer.phone}">Phone</p>
+    <p class="meta" th:if="${card.installer.website}" th:text="${card.installer.website}">Website</p>
 </div>
 
 </body>

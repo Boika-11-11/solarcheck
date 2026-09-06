@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin — SolarCheck</title>
+</head>
+<body>
+
+<h1>SolarCheck Admin</h1>
+
+<p>Pending reviews: <span th:text="${pendingCount}">0</span></p>
+<p>Installers: <span th:text="${installerCount}">0</span></p>
+
+<p><a href="/admin/reviews">Moderate reviews</a></p>
+<p><a href="/admin/installers">Manage installers</a></p>
+<p><a href="/">View public site</a></p>
+
+</body>
+</html>

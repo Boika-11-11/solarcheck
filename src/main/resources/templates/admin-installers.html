@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Installers — SolarCheck Admin</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+        a.back { color: #1a3a5c; text-decoration: none; font-size: 14px; }
+        h1 { color: #1a3a5c; }
+        .panel { background: #fff; padding: 22px; border-radius: 8px; margin-bottom: 25px; }
+        .panel h2 { margin-top: 0; font-size: 18px; color: #1a3a5c; }
+        .row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+        .field { flex: 1; min-width: 190px; }
+        label { display: block; font-size: 13px; font-weight: bold; color: #555; margin-bottom: 4px; }
+        input[type=text] { width: 100%; padding: 9px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        .check { margin: 10px 0 16px 0; font-size: 14px; color: #333; }
+        button.add { padding: 11px 24px; background: #f5a623; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 15px; }
+        .error { background: #fde8e8; color: #a12; padding: 12px; border-radius: 4px; margin-bottom: 15px; }
+        table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; }
+        th { text-align: left; background: #1a3a5c; color: #fff; padding: 11px; font-size: 14px; }
+        td { padding: 11px; border-bottom: 1px solid #eee; font-size: 14px; vertical-align: middle; }
+        .yes { color: #2e9e4f; font-weight: bold; }
+        .no { color: #999; }
+        .actions { white-space: nowrap; }
+        .actions form { display: inline; }
+        .btn { padding: 6px 11px; border: 1px solid #ccc; background: #f8f8f8; border-radius: 4px; cursor: pointer; font-size: 13px; text-decoration: none; color: #333; display: inline-block; margin-right: 4px; }
+        .btn.del { border-color: #e0b4b4; background: #fdf0f0; color: #c0392b; }
+    </style>
+</head>
+<body>
+
+<a class="back" href="/admin">&larr; Admin home</a>
+
+<h1>Installers</h1>
+
+<div class="panel">
+    <h2>Add a new installer</h2>
+
+    <div th:if="${error}" class="error" th:text="${error}">Error</div>
+
+    <form action="/admin/installers" method="post">
+        <div class="row">
+            <div class="field">
+                <label for="name">Company name *</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="field">
+                <label for="city">City *</label>
+                <input type="text" id="city" name="city" required>
+            </div>
+            <div class="field">
+                <label for="province">Province</label>
+                <input type="text" id="province" name="province">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="field">
+                <label for="phone">Phone</label>
+                <input type="text" id="phone" name="phone">
+            </div>
+            <div class="field">
+                <label for="website">Website</label>
+                <input type="text" id="website" name="website">
+            </div>
+        </div>
+
+        <div class="check">
+            <input type="checkbox" id="verified" name="verified">
+            <label for="verified" style="display:inline; font-weight:normal;">
+                Verified — I have checked their PV GreenCard / electrical registration
+            </label>
+        </div>
+
+        <button type="submit" class="add">Add installer</button>
+    </form>
+</div>
+
+<table>
+    <tr>
+        <th>Name</th>
+        <th>City</th>
+        <th>Province</th>
+        <th>Phone</th>
+        <th>Verified</th>
+        <th>Actions</th>
+    </tr>
+    <tr th:each="installer : ${installers}">
+        <td th:text="${installer.name}">Name</td>
+        <td th:text="${installer.city}">City</td>
+        <td th:text="${installer.province} ?: '—'">Province</td>
+        <td th:text="${installer.phone} ?: '—'">Phone</td>
+        <td>
+            <span th:if="${installer.verified}" class="yes">YES</span>
+            <span th:unless="${installer.verified}" class="no">no</span>
+        </td>
+        <td class="actions">
+            <a class="btn" th:href="@{/admin/installers/{id}/edit(id=${installer.id})}">Edit</a>
+
+            <form th:action="@{/admin/installers/{id}/toggle-verified(id=${installer.id})}" method="post">
+                <button type="submit" class="btn"
+                        th:text="${installer.verified} ? 'Un-verify' : 'Verify'">Verify</button>
+            </form>
+
+            <form th:action="@{/admin/installers/{id}/delete(id=${installer.id})}" method="post"
+                  onsubmit="return confirm('Delete this installer permanently?');">
+                <button type="submit" class="btn del">Delete</button>
+            </form>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

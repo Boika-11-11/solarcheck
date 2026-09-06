@@ -12,4 +12,6 @@ public interface InstallerRepository extends JpaRepository<Installer, Long> {
     List<Installer> findByCityIgnoreCaseOrderByNameAsc(String city);
 
     List<Installer> findByVerifiedTrueOrderByNameAsc();
+
+    boolean existsByNameIgnoreCaseAndCityIgnoreCase(String name, String city);
 }

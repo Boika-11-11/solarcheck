@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit installer — SolarCheck Admin</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+        a.back { color: #1a3a5c; text-decoration: none; font-size: 14px; }
+        h1 { color: #1a3a5c; font-size: 24px; }
+        .panel { background: #fff; padding: 25px; border-radius: 8px; }
+        label { display: block; font-weight: bold; margin: 16px 0 5px 0; color: #555; font-size: 13px; }
+        input[type=text] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 15px; }
+        .check { margin: 18px 0; font-size: 14px; }
+        button.save { margin-top: 15px; padding: 12px 26px; background: #f5a623; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 15px; }
+        a.cancel { margin-left: 14px; color: #666; font-size: 14px; }
+        .error { background: #fde8e8; color: #a12; padding: 12px; border-radius: 4px; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+<a class="back" href="/admin/installers">&larr; Back to installers</a>
+
+<h1>Edit installer</h1>
+
+<div class="panel">
+
+    <div th:if="${error}" class="error" th:text="${error}">Error</div>
+
+    <form th:action="@{/admin/installers/{id}/edit(id=${installer.id})}" method="post">
+
+        <label for="name">Company name *</label>
+        <input type="text" id="name" name="name" th:value="${installer.name} ?: ''" required>
+
+        <label for="city">City *</label>
+        <input type="text" id="city" name="city" th:value="${installer.city} ?: ''" required>
+
+        <label for="province">Province</label>
+        <input type="text" id="province" name="province" th:value="${installer.province} ?: ''">
+
+        <label for="phone">Phone</label>
+        <input type="text" id="phone" name="phone" th:value="${installer.phone} ?: ''">
+
+        <label for="website">Website</label>
+        <input type="text" id="website" name="website" th:value="${installer.website} ?: ''">
+
+        <div class="check">
+            <input type="checkbox" id="verified" name="verified" th:checked="${installer.verified}">
+            <label for="verified" style="display:inline; font-weight:normal;">
+                Verified — PV GreenCard / electrical registration checked
+            </label>
+        </div>
+
+        <button type="submit" class="save">Save changes</button>
+        <a class="cancel" href="/admin/installers">Cancel</a>
+    </form>
+</div>
+
+</body>
+</html>
